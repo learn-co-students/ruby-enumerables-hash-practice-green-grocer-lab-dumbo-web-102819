@@ -66,7 +66,7 @@ describe "Grocer" do
       end
 
       it "adds the count number to the property hash of couponed item" do
-        expect(@avocado_result["AVOCADO W/COUPON"][:count]).to eq(2)
+        expect(@avocado_result["AVOCADO W/COUPON"][:count]).to eq(1)
       end
 
       it "removes the number of discounted items from the original item's count" do
@@ -92,7 +92,7 @@ describe "Grocer" do
         expect(cheese_result["CHEESE"][:price]).to eq(6.50)
         expect(cheese_result["CHEESE"][:count]).to eq(2)
         expect(cheese_result["CHEESE W/COUPON"][:price]).to eq(5.00)
-        expect(cheese_result["CHEESE W/COUPON"][:count]).to eq(3)
+        expect(cheese_result["CHEESE W/COUPON"][:count]).to eq(1)
         expect(cheese_result["CHEESE W/COUPON"][:clearance]).to eq(false)
       end
 
@@ -122,10 +122,10 @@ describe "Grocer" do
         expect(multiple_coupons["CHEESE"][:price]).to eq(6.50)
         expect(multiple_coupons["AVOCADO"][:price]).to eq(3.00)
         expect(multiple_coupons["CHEESE W/COUPON"][:price]).to eq(5.00)
-        expect(multiple_coupons["CHEESE W/COUPON"][:count]).to eq(3)
+        expect(multiple_coupons["CHEESE W/COUPON"][:count]).to eq(1)
         expect(multiple_coupons["CHEESE W/COUPON"][:clearance]).to eq(false)
         expect(multiple_coupons["AVOCADO W/COUPON"][:price]).to eq(2.50)
-        expect(multiple_coupons["AVOCADO W/COUPON"][:count]).to eq(2)
+        expect(multiple_coupons["AVOCADO W/COUPON"][:count]).to eq(1)
         expect(multiple_coupons["AVOCADO W/COUPON"][:clearance]).to eq(true)
       end
 
@@ -148,7 +148,7 @@ describe "Grocer" do
         expect(two_coupon_result["AVOCADO"][:count]).to eq(1)
         expect(two_coupon_result["AVOCADO W/COUPON"][:price]).to eq(2.50)
         expect(two_coupon_result["AVOCADO"][:price]).to eq(3.00)
-        expect(two_coupon_result["AVOCADO W/COUPON"][:count]).to eq(4)
+        expect(two_coupon_result["AVOCADO W/COUPON"][:count]).to eq(2)
       end
     end
   end
@@ -224,7 +224,7 @@ describe "Grocer" do
         expect(self).to receive(:apply_coupons).with(consolidated, coupons).and_return(coupons_applied)
         expect(self).to receive(:apply_clearance).with(coupons_applied).and_return(clearance_applied)
 
-        expect(checkout(cart, coupons)).to eq(35.50)
+        expect(checkout(cart, coupons)).to eq(25.50)
       end
 
       it "calls on #apply_clearance after calling on #apply_coupons with multiple items, coupons, and items are on clearance" do
@@ -242,7 +242,7 @@ describe "Grocer" do
         expect(self).to receive(:apply_coupons).with(consolidated, coupons).and_return(coupons_applied)
         expect(self).to receive(:apply_clearance).with(coupons_applied).and_return(clearance_applied)
 
-        expect(checkout(cart, coupons)).to eq(22.60)
+        expect(checkout(cart, coupons)).to eq(10.60)
       end
 
       it "calls on #consolidate_cart before calculating the total for two different items" do
@@ -267,21 +267,21 @@ describe "Grocer" do
         cheese = find_item('CHEESE')
         cart = Array.new(3, cheese)
         coupons = [find_coupon("CHEESE")]
-        expect(checkout(cart, coupons)).to eq(15.00)
+        expect(checkout(cart, coupons)).to eq(5.00)
       end
 
       it "considers coupons and clearance discounts" do
         avocado = find_item('AVOCADO')
         cart = Array.new(2, avocado)
         coupons = [find_coupon("AVOCADO")]
-        expect(checkout(cart, coupons)).to eq(4.00)
+        expect(checkout(cart, coupons)).to eq(2.00)
       end
 
       it "charges full price for items that fall outside of coupon count" do
         beer = find_item('BEER')
         cart = Array.new(3, beer)
         coupons = [find_coupon("BEER")]
-        expect(checkout(cart, coupons)).to eq(33.00)
+        expect(checkout(cart, coupons)).to eq(23.00)
       end
 
       it "only applies coupons that meet minimum amount" do
@@ -289,7 +289,7 @@ describe "Grocer" do
         cart = Array.new(3, beer)
         beer_coupon = find_coupon("BEER")
         coupons = [beer_coupon, beer_coupon]
-        expect(checkout(cart, coupons)).to eq(33.00)
+        expect(checkout(cart, coupons)).to eq(23.00)
       end
     end
 
